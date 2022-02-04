@@ -1,24 +1,16 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import UsersTable from "./components/UsersTable";
+import UserForm from "./components/UserForm";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1 style={{ padding: "10px 0 0 40px", marginBottom: '40px' }}>Dashboard</h1>
+      <Routes>
+        <Route path="/form" element={<UserForm />} />
+        <Route path="/" element={<UsersTable />} />
+      </Routes>
+    </>
   );
 }
 
