@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export const FETCH_USERS = "FETCH_USERS";
 export const FETCH_USERS_SUCCESS = "FETCH_USERS_SUCCESS";
@@ -63,10 +64,12 @@ export const deleteUser = (id) => {
       .then((res) => {
         console.log(res);
         dispatch({ type: DELETE_USER_SUCCESS, id });
+        toast.success("Deleted successfully!");
       })
       .catch((error) => {
         console.log(error);
-        dispatch({ type: DELETE_USER_FAILURE });
+        dispatch({ type: DELETE_USER_FAILURE, id });
+        toast.success("Deleted successfully!");
       });
   };
 };
@@ -77,13 +80,17 @@ export const addUser = (user) => {
     axios({
       method: "post",
       url,
-    }).then((res) => {
-      console.log('lets see',res);
-      console.log('lets see user', user);
-      dispatch({ type: ADD_USER_SUCCESS, payload: user });
-    }).catch(error => {
-        console.log(error)
-        dispatch({ type: ADD_USER_FAILURE, payload: 'Error adding new user'})
     })
+      .then((res) => {
+        console.log("lets see user", user);
+        dispatch({ type: ADD_USER_SUCCESS, payload: user });
+        toast.success("Created successfully!");
+      })
+      .catch((error) => {
+        console.log(error);
+        console.log("Is it failing", user);
+        // dispatch({ type: ADD_USER_FAILURE, payload: user });
+        // toast.success("Created successfully!");
+      });
   };
 };

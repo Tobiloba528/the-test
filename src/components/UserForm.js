@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -22,9 +23,11 @@ const validationSchema = Yup.object({
 });
 
 const UserForm = (props) => {
-    useEffect(() => {
-        props.getUsers();
-      }, []);
+
+
+    // useEffect(() => {
+    //     props.getUsers();
+    //   }, []);
 
 
   const navigate = useNavigate();
@@ -32,8 +35,9 @@ const UserForm = (props) => {
   const onSubmit = (values, submitProps) => {
     console.log("Form data", values);
     const usersLength = props.users.length
-    props.createUser({id: usersLength + 1, ...values});
-    navigate('/');
+    props.createUser({id: uuidv4().substring(0,2), ...values});
+    console.log(props.users.concat({id: usersLength + 1, ...values}));
+    navigate("/");
   };
 
   return (

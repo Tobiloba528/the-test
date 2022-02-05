@@ -57,7 +57,6 @@ const UsersTable = (props) => {
           </thead>
           <tbody>
             {props.users.length > 0 &&
-              !props.loading &&
               props.users.map((user) => (
                 <tr key={user.id} className="tr-row">
                   <td>{user.id}</td>
@@ -88,15 +87,14 @@ const UsersTable = (props) => {
           </tbody>
         </table>
       </Inner>
-      {props.loading && (
+      {/* {props.loading && (
         <SpinnerContainer>
           <div className="spinner-border spinner" role="status">
             <span className="sr-only"></span>
           </div>
         </SpinnerContainer>
-      )}
-      {!props.loading &&
-        props.users.length === 0 && (
+      )} */}
+      { props.users.length === 0 && (
             <SpinnerContainer>
               <h5>
                 There are no available users. Click the button above to add users
@@ -119,7 +117,7 @@ const TableContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 0;
+    padding: 10px 0;
   }
 
   td {
@@ -148,7 +146,7 @@ const mapStateToProps = (state) => {
   return {
     loading: state.loadingUsers,
     users: state.users,
-    allUsers: state.allUsers,
+    newUsers: state.newUsers,
     error: state.error,
   };
 };
