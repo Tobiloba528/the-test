@@ -1,25 +1,19 @@
+import { useEffect } from "react";
 import styled from "styled-components";
-import {
-  Formik,
-  Form,
-  Field,
-  ErrorMessage,
-  FieldArray,
-  FastField,
-} from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import TextError from './common/TextError';
+import { connect } from "react-redux";
+import { addUser, fetchUsers } from "../redux/users/actions";
+import TextError from "./common/TextError";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
   name: "",
   email: "",
-};
-
-const onSubmit = (values, submitProps) => {
-  console.log("Form data", values);
-  // console.log('submitProps', submitProps)
-  // submitProps.setSubmitting(false)
-  // submitProps.resetForm()
+  username: "",
+  address: {
+    city: "",
+  },
 };
 
 const validationSchema = Yup.object({
@@ -27,7 +21,21 @@ const validationSchema = Yup.object({
   email: Yup.string().email("Invalid email format").required("Required"),
 });
 
-const UserForm = () => {
+const UserForm = (props) => {
+    useEffect(() => {
+        props.getUsers();
+      }, []);
+
+
+  const navigate = useNavigate();
+
+  const onSubmit = (values, submitProps) => {
+    console.log("Form data", values);
+    const usersLength = props.users.length
+    props.createUser({id: usersLength + 1, ...values});
+    navigate('/');
+  };
+
   return (
     <StyledForm>
       <h5>Form</h5>
@@ -36,29 +44,58 @@ const UserForm = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
-        
         >
           {(formik) => {
             console.log("Formik props", formik);
             return (
               <Form>
-                <div className='input-container'>
+                <div className="input-container">
                   <label htmlFor="name">Name</label>
-                  <Field type="text" id="name" name="name" className='input'/>
+                  <Field type="text" id="name" name="name" className="input" />
                   <ErrorMessage name="name" component={TextError} />
                 </div>
 
-                <div className='input-container'>
+                <div className="input-container">
                   <label htmlFor="email">Email</label>
-                  <Field type="email" id="email" name="email" className='input'/>
-                  <ErrorMessage name="email" component={TextError}/>
+                  <Field
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="input"
+                  />
+                  <ErrorMessage name="email" component={TextError} />
+                </div>
+                <div className="input-container">
+                  <label htmlFor="username">Username</label>
+                  <Field
+                    type="text"
+                    id="username"
+                    name="username"
+                    className="input"
+                  />
+                </div>
+                <div className="input-container">
+                  <label htmlFor="city">City</label>
+                  <Field
+                    type="text"
+                    id="city"
+                    name="address.city"
+                    className="input"
+                  />
                 </div>
                 <button
                   type="submit"
                   className="btn btn-success"
-                //   disabled={!formik.isValid || formik.isSubmitting}
+                  disabled={!formik.isValid}
                 >
                   Submit
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => navigate("/")}
+                >
+                  Cancel
                 </button>
               </Form>
             );
@@ -80,33 +117,50 @@ const StyledForm = styled.div`
     border-bottom: 1px solid #c5c6d0;
   }
 
-  @media (max-width: 500px){
-      width: 80%;
+  @media (max-width: 500px) {
+    width: 80%;
   }
-
 `;
 
 const Container = styled.div`
-    padding: 20px 40px;
+  padding: 20px 40px;
 
-    .input-container{
-      margin: 40px 0;
-      display: flex;
-      flex-direction: column;
+  .input-container {
+    margin: 40px 0;
+    display: flex;
+    flex-direction: column;
   }
 
-  input{
-      padding: 5px;
+  input {
+    padding: 5px;
 
-      &:focus{
-          outline: none;
-      }
+    &:focus {
+      outline: none;
+    }
   }
 
-  label{
-      margin-bottom: 5px;
+  label {
+    margin-bottom: 5px;
   }
-`
 
+  .btn{
+      margin-right: 10px;
+  }
+`;
 
-export default UserForm;
+const mapStateToProps = (state) => {
+  return {
+    loading: state.loadingUsers,
+    users: state.users,
+    error: state.error,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getUsers: () => dispatch(fetchUsers()),
+    createUser: (user) => dispatch(addUser(user)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserForm);
