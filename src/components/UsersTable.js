@@ -56,13 +56,13 @@ const UsersTable = (props) => {
             </tr>
           </thead>
           <tbody>
-            {props.users.length > 0 &&
+            {!props.loading && props.users.length > 0 &&
               props.users.map((user) => (
                 <tr key={user.id} className="tr-row">
                   <td>{user.id}</td>
-                  <td>{user.name}</td>
-                  <td>{user.username}</td>
-                  <td>{user.email}</td>
+                  <td>{user?.name}</td>
+                  <td>{user?.username}</td>
+                  <td>{user?.email}</td>
                   <td>{user.address?.city}</td>
                   <td>
                     <button
@@ -87,14 +87,14 @@ const UsersTable = (props) => {
           </tbody>
         </table>
       </Inner>
-      {/* {props.loading && (
+      {props.loading && (
         <SpinnerContainer>
           <div className="spinner-border spinner" role="status">
             <span className="sr-only"></span>
           </div>
         </SpinnerContainer>
-      )} */}
-      { props.users.length === 0 && (
+      )}
+      { !props.loading && props.users.length === 0 && (
             <SpinnerContainer>
               <h5>
                 There are no available users. Click the button above to add users
