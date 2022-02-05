@@ -13,6 +13,12 @@ export const ADD_USER = "ADD_USER";
 export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 export const ADD_USER_FAILURE = "ADD_USER_FAILURE";
 
+export const FETCH_USER = "GET_USER";
+
+export const EDIT_USER = "EDIT_USER";
+export const EDIT_USER_SUCCESS = "EDIT_USER_SUCCESS";
+export const EDIT_USER_FAILURE = "EDIT_USER_FAILURE";
+
 const url =
   "https://my-json-server.typicode.com/karolkproexe/jsonplaceholderdb/data";
 
@@ -68,6 +74,7 @@ export const deleteUser = (id) => {
       })
       .catch((error) => {
         console.log(error);
+        // BECAUSE DELETING THE NEWLY ADDED USERS WILL FAIL
         dispatch({ type: DELETE_USER_FAILURE, id });
         toast.success("Deleted successfully!");
       });
@@ -89,8 +96,30 @@ export const addUser = (user) => {
       .catch((error) => {
         console.log(error);
         console.log("Is it failing", user);
-        // dispatch({ type: ADD_USER_FAILURE, payload: user });
-        // toast.success("Created successfully!");
+      });
+  };
+};
+
+export const fetchUser = (id) => {
+  return {
+    type: FETCH_USER,
+    id,
+  };
+};
+
+export const editUser = (user) => {
+  return (dispatch) => {
+    dispatch({ type: EDIT_USER });
+    axios({
+      method: "patch",
+      url: `${url}/${user.id}`,
+    })
+      .then((res) => {
+        dispatch({ type: EDIT_USER_SUCCESS, payload: user });
+        toast.success("Edited successfully!");
+      })
+      .catch((error) => {
+        dispatch({ type: EDIT_USER_FAILURE, payload: user });
       });
   };
 };

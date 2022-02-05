@@ -1,21 +1,11 @@
-import { useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import styled from "styled-components";
 import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { connect } from "react-redux";
-import { addUser, fetchUsers } from "../redux/users/actions";
+import { addUser, fetchUsers, editUser } from "../redux/users/actions";
 import TextError from "./common/TextError";
 import { useNavigate } from "react-router-dom";
-
-const initialValues = {
-  name: "",
-  email: "",
-  username: "",
-  address: {
-    city: "",
-  },
-};
 
 const validationSchema = Yup.object({
   name: Yup.string().required("Required"),
@@ -23,20 +13,27 @@ const validationSchema = Yup.object({
 });
 
 const UserForm = (props) => {
-
-
-    // useEffect(() => {
-    //     props.getUsers();
-    //   }, []);
-
-
   const navigate = useNavigate();
+
+  const { userId } = useParams();
+  const { name, email, username, address } = props.user;
+
+  const initialValues = {
+    name: name ? name : "",
+    email: email ? email : "",
+    username: username ? username : "",
+    address: {
+      city: address ? address.city : "",
+    },
+  };
 
   const onSubmit = (values, submitProps) => {
     console.log("Form data", values);
-    const usersLength = props.users.length
-    props.createUser({id: uuidv4().substring(0,2), ...values});
-    console.log(props.users.concat({id: usersLength + 1, ...values}));
+    const usersLength = props.users.length;
+    const lastElementId = props.users.at(-1)['id'];
+    userId
+      ? props.edit({ id: userId, ...values })
+      : props.createUser({ id: lastElementId + 1, ...values });
     navigate("/");
   };
 
@@ -147,8 +144,8 @@ const Container = styled.div`
     margin-bottom: 5px;
   }
 
-  .btn{
-      margin-right: 10px;
+  .btn {
+    margin-right: 10px;
   }
 `;
 
@@ -156,7 +153,7 @@ const mapStateToProps = (state) => {
   return {
     loading: state.loadingUsers,
     users: state.users,
-    error: state.error,
+    user: state.user,
   };
 };
 
@@ -164,6 +161,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUsers: () => dispatch(fetchUsers()),
     createUser: (user) => dispatch(addUser(user)),
+    edit: (user) => dispatch(editUser(user)),
   };
 };
 

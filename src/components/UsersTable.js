@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
+import Pagination from "./common/Pagination";
 import { useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { fetchUsers, deleteUser } from "../redux/users/actions";
+import { fetchUsers, deleteUser, fetchUser } from "../redux/users/actions";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import { paginate } from '../utils/paginate';
 
 const UsersTable = (props) => {
+  const [currentPage, setCurrentPage] = useState(1);
   useEffect(() => {
     props.getUsers();
   }, []);
@@ -28,7 +31,18 @@ const UsersTable = (props) => {
     });
   };
 
+  const handleEdit = (id) => {
+    props.getUser(id);
+    navigate(`edit-user/${id}`);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   const navigate = useNavigate();
+
+  const paginatedUsers = paginate(props.users, currentPage, 5)
 
   return (
     <TableContainer>
@@ -37,7 +51,7 @@ const UsersTable = (props) => {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={() => navigate("form")}
+          onClick={() => navigate("create-user")}
         >
           Add User
         </button>
@@ -56,8 +70,9 @@ const UsersTable = (props) => {
             </tr>
           </thead>
           <tbody>
-            {!props.loading && props.users.length > 0 &&
-              props.users.map((user) => (
+            {!props.loading &&
+              props.users.length > 0 &&
+              paginatedUsers.map((user) => (
                 <tr key={user.id} className="tr-row">
                   <td>{user.id}</td>
                   <td>{user?.name}</td>
@@ -68,7 +83,7 @@ const UsersTable = (props) => {
                     <button
                       type="button"
                       className="btn btn-warning"
-                      onClick={() => navigate("form")}
+                      onClick={() => handleEdit(user.id)}
                     >
                       Edit
                     </button>
@@ -94,13 +109,19 @@ const UsersTable = (props) => {
           </div>
         </SpinnerContainer>
       )}
-      { !props.loading && props.users.length === 0 && (
-            <SpinnerContainer>
-              <h5>
-                There are no available users. Click the button above to add users
-              </h5>
-            </SpinnerContainer>
-          )}
+      {!props.loading && props.users.length === 0 && (
+        <SpinnerContainer>
+          <h5>
+            There are no available users. Click the button above to add users
+          </h5>
+        </SpinnerContainer>
+      )}
+      <Pagination
+        itemsCount={props.users.length}
+        pageSize={5}
+        onPageChange={handlePageChange}
+        currentPage={currentPage}
+      />
     </TableContainer>
   );
 };
@@ -117,7 +138,7 @@ const TableContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 30px 0;
   }
 
   td {
@@ -155,6 +176,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getUsers: () => dispatch(fetchUsers()),
     removeUser: (id) => dispatch(deleteUser(id)),
+    getUser: (id) => dispatch(fetchUser(id)),
   };
 };
 

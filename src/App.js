@@ -12,7 +12,8 @@ function App() {
         Dashboard
       </h1>
       <Routes>
-        <Route path="/form" element={<UserForm />} />
+        <Route path="edit-user/:userId" element={<UserForm />} />
+        <Route path="create-user" element={<UserForm />} />
         <Route path="/" element={<UsersTable />} />
       </Routes>
     </>

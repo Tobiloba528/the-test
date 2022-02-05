@@ -8,12 +8,18 @@ import {
   ADD_USER,
   ADD_USER_SUCCESS,
   ADD_USER_FAILURE,
+  FETCH_USER,
+  EDIT_USER,
+  EDIT_USER_SUCCESS,
+  EDIT_USER_FAILURE,
 } from "./actions";
 
 const initialState = {
   loadingUsers: false,
   users: [],
   newUsers: [],
+  editedUsers: [],
+  user: {},
   error: "",
 };
 
@@ -28,7 +34,8 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         loadingUsers: false,
-        users: [...action.payload, ...state.newUsers],
+        users: state.editedUsers.length > 0 ? [...state.editedUsers, ...state.newUsers ]: [...action.payload, ...state.newUsers],
+        user: {},
       };
     case FETCH_USERS_FAILURE:
       return {
@@ -67,6 +74,30 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         newUsers: state.newUsers.concat(action.payload),
+      };
+    case EDIT_USER:
+      return {
+        ...state,
+      };
+    case EDIT_USER_SUCCESS:
+      const allUsers = [...state.users];
+      const userIndex = allUsers.findIndex(
+        (user) => user.id == action.payload.id
+      );
+      allUsers[userIndex] = action.payload;
+      return {
+        ...state,
+        users: allUsers,
+        editedUsers: allUsers
+      };
+    case EDIT_USER_FAILURE:
+      return {
+        ...state,
+      };
+    case FETCH_USER:
+      return {
+        ...state,
+        user: state.users.find((user) => user.id === action.id),
       };
 
     default:
