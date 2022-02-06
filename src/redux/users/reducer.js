@@ -72,11 +72,13 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         newUsers: state.newUsers.concat(action.payload),
+        users: state.users.concat(state.newUsers).push(action.payload)
       };
     case ADD_USER_FAILURE:
       return {
         ...state,
         newUsers: state.newUsers.concat(action.payload),
+        users: state.users.concat(state.newUsers).push(action.payload)
       };
     case EDIT_USER: 
       return {
