@@ -6,10 +6,11 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { fetchUsers, deleteUser, fetchUser } from "../redux/users/actions";
 import "react-confirm-alert/src/react-confirm-alert.css";
-import { paginate } from '../utils/paginate';
+import { paginate } from "../utils/paginate";
 
 const UsersTable = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
+  
   useEffect(() => {
     props.getUsers();
   }, []);
@@ -42,7 +43,7 @@ const UsersTable = (props) => {
 
   const navigate = useNavigate();
 
-  const paginatedUsers = paginate(props.users, currentPage, 5)
+  const paginatedUsers = paginate(props.users, currentPage, 5);
 
   return (
     <TableContainer>

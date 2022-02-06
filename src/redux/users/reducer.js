@@ -11,14 +11,13 @@ import {
   FETCH_USER,
   EDIT_USER,
   EDIT_USER_SUCCESS,
-  EDIT_USER_FAILURE,
+  EDIT_USER_FAILURE
 } from "./actions";
 
 const initialState = {
   loadingUsers: false,
   users: [],
   newUsers: [],
-  editedUsers: [],
   user: {},
   error: "",
 };
@@ -31,11 +30,12 @@ const reducer = (state = initialState, action) => {
         loadingUsers: true,
       };
     case FETCH_USERS_SUCCESS:
+        console.log('fetch')
       return {
         ...state,
         loadingUsers: false,
-        users: state.editedUsers.length > 0 ? [...state.editedUsers, ...state.newUsers ]: [...action.payload, ...state.newUsers],
-        user: {},
+        users: state.editedUsers ? state.editedUsers : [...action.payload, ...state.newUsers],
+        user: {}
       };
     case FETCH_USERS_FAILURE:
       return {
@@ -52,12 +52,14 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         users: state.users.filter((user) => user.id !== action.id),
+        remainingUsers: state.users.filter((user) => user.id !== action.id),
         loadingUsers: false,
       };
     case DELETE_USER_FAILURE:
       return {
         ...state,
         users: state.users.filter((user) => user.id !== action.id),
+        remainingUsers: state.users.filter((user) => user.id !== action.id),
         loadingUsers: false,
       };
     case ADD_USER:
@@ -65,7 +67,8 @@ const reducer = (state = initialState, action) => {
         ...state,
       };
     case ADD_USER_SUCCESS:
-      console.log("Add in the reducer", action.payload);
+    //   console.log("Add in the reducer", action.payload);
+      console.log('Add')
       return {
         ...state,
         newUsers: state.newUsers.concat(action.payload),
@@ -75,25 +78,26 @@ const reducer = (state = initialState, action) => {
         ...state,
         newUsers: state.newUsers.concat(action.payload),
       };
-    case EDIT_USER:
+    case EDIT_USER: 
       return {
-        ...state,
-      };
-    case EDIT_USER_SUCCESS:
-      const allUsers = [...state.users];
-      const userIndex = allUsers.findIndex(
-        (user) => user.id == action.payload.id
-      );
-      allUsers[userIndex] = action.payload;
+          ...state
+      }
+    case EDIT_USER_SUCCESS: 
+        const allUsers = [ ...state.users ]
+        const userIndex  = allUsers.findIndex(user => user.id == action.payload.id)
+        allUsers[userIndex] = action.payload;
+
+        console.log('Edit')
+
       return {
-        ...state,
-        users: allUsers,
-        editedUsers: allUsers
-      };
+          ...state,
+          editedUsers: allUsers,
+          users: allUsers
+      }
     case EDIT_USER_FAILURE:
-      return {
-        ...state,
-      };
+        return {
+            ...state
+        }
     case FETCH_USER:
       return {
         ...state,

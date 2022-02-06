@@ -50,7 +50,7 @@ export const fetchUsers = () => {
       url,
     })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         dispatch(fetchUsersSuccess(res.data));
       })
       .catch((error) => {
