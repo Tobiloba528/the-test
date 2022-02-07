@@ -49,6 +49,7 @@ const reducer = (state = initialState, action) => {
         loadingUsers: true,
       };
     case DELETE_USER_SUCCESS:
+      console.log('delete');
       return {
         ...state,
         users: state.users.filter((user) => user.id !== action.id),
@@ -56,6 +57,7 @@ const reducer = (state = initialState, action) => {
         loadingUsers: false,
       };
     case DELETE_USER_FAILURE:
+      console.log('delete');
       return {
         ...state,
         users: state.users.filter((user) => user.id !== action.id),
@@ -75,6 +77,7 @@ const reducer = (state = initialState, action) => {
         users: state.users.concat(state.newUsers).push(action.payload)
       };
     case ADD_USER_FAILURE:
+      console.log('add');
       return {
         ...state,
         newUsers: state.newUsers.concat(action.payload),
@@ -88,17 +91,25 @@ const reducer = (state = initialState, action) => {
         const allUsers = [ ...state.users ]
         const userIndex  = allUsers.findIndex(user => user.id == action.payload.id)
         allUsers[userIndex] = action.payload;
+        console.log('edit');
 
-        console.log('Edit')
 
       return {
           ...state,
           editedUsers: allUsers,
           users: allUsers
       }
+
+
     case EDIT_USER_FAILURE:
+      const allUserss = [ ...state.users ]
+        const userI = allUserss.findIndex(user => user.id == action.payload.id)
+        allUserss[userI] = action.payload;
+        console.log('edit');
+        
         return {
-            ...state
+            ...state,
+            users: allUserss
         }
     case FETCH_USER:
       return {
