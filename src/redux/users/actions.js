@@ -96,6 +96,7 @@ export const addUser = (user) => {
       .catch((error) => {
         console.log(error);
         console.log("Is it failing", user);
+        dispatch({ type: ADD_USER_FAILURE, payload: user });
       });
   };
 };
