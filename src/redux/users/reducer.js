@@ -79,12 +79,11 @@ const reducer = (state = initialState, action) => {
         ...state,
       };
     case ADD_USER_SUCCESS:
-      //   console.log("Add in the reducer", action.payload);
       const totalUsers = state.users
       console.log("Add");
       return {
         ...state,
-        users: state.users.concat(state.newUsers).push(action.payload),
+        users: [...totalUserss, action.payload],
         totalNewUsers: [ ...totalUsers, action.payload],
         remainingUsers: [],
         editedUsers: []
@@ -93,7 +92,7 @@ const reducer = (state = initialState, action) => {
       const totalUserss = state.users
       return {
         ...state,
-        users: state.users.concat(state.newUsers).push(action.payload),
+        users:  [...totalUserss, action.payload],
         totalNewUsers: [ ...totalUserss, action.payload],
         remainingUsers: [],
         editedUsers: []
